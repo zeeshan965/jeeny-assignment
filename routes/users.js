@@ -3,8 +3,8 @@ let router = express.Router ();
 
 const UserController = require ( '../controllers/user' );
 
-router.get ( '/', UserController.findUsers );
-router.get ( '/:id', UserController.findUsersById );
+router.get ( '/', UserController.find );
+router.get ( '/:id', UserController.findById );
 router.post ( '/', UserController.save );
 router.put ( '/:id', UserController.update );
 router.patch ( '/:id', UserController.update );

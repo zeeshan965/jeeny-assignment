@@ -1,13 +1,13 @@
 const DB = require ( '../models' );
 
-class UserController {
+class ConversationController {
 
     /**
      * @param req
      * @param res
      */
     static find = ( req, res ) => {
-        DB.User.findAll ().then ( ( users ) => {
+        DB.Conversation.findAll ().then ( ( users ) => {
             if ( ! users ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
             res.status ( 200 ).send ( { status : 200, message : 'Data find Successfully', data : users } );
         } ).catch ( ( error ) => {
@@ -20,9 +20,9 @@ class UserController {
      * @param res
      */
     static findById = ( req, res ) => {
-        DB.User.findByPk ( req.params.id ).then ( ( user ) => {
-            if ( ! user ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
-            res.status ( 200 ).send ( { status : 200, message : 'Data find Successfully', data : user } );
+        DB.Conversation.findByPk ( req.params.id ).then ( ( conversation ) => {
+            if ( ! conversation ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
+            res.status ( 200 ).send ( { status : 200, message : 'Data find Successfully', data : conversation } );
         } ).catch ( ( error ) => {
             return res.status ( 200 ).send ( { status : 404, message : 'No data found', error : error } );
         } );
@@ -33,12 +33,11 @@ class UserController {
      * @param res
      */
     static save = ( req, res ) => {
-        DB.User.create ( {
-            name : req.body.name,
-            email : req.body.email
-        } ).then ( ( user ) => {
-            if ( ! user ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
-            res.status ( 200 ).send ( { status : 200, message : 'Data created Successfully', data : user } );
+        DB.Conversation.create ( {
+            created_by : req.body.created_by
+        } ).then ( ( conversation ) => {
+            if ( ! conversation ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
+            res.status ( 200 ).send ( { status : 200, message : 'Data created Successfully', data : conversation } );
         } ).catch ( ( error ) => {
             return res.status ( 200 ).send ( { status : 404, message : 'No data found', error : error } );
         } );
@@ -49,9 +48,9 @@ class UserController {
      * @param res
      */
     static update = ( req, res ) => {
-        DB.User.update ( { name : req.body.name }, { where : { id : req.params.id } } ).then ( ( user ) => {
-            if ( ! user ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
-            res.status ( 200 ).send ( { status : 200, message : 'Data updated Successfully', data : user } );
+        DB.Conversation.update ( { created_by : req.body.created_by }, { where : { id : req.params.id } } ).then ( ( conversation ) => {
+            if ( ! conversation ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
+            res.status ( 200 ).send ( { status : 200, message : 'Data updated Successfully', data : conversation } );
         } ).catch ( ( error ) => {
             return res.status ( 200 ).send ( { status : 404, message : 'No data found', error : error } );
         } );
@@ -62,15 +61,15 @@ class UserController {
      * @param res
      */
     static delete = ( req, res ) => {
-        DB.User.destroy ( {
+        DB.Conversation.destroy ( {
             where : { id : req.params.id },
-        } ).then ( ( user ) => {
-            if ( ! user ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
-            res.status ( 200 ).send ( { status : 200, message : 'Data deleted Successfully', data : user } );
+        } ).then ( ( conversation ) => {
+            if ( ! conversation ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
+            res.status ( 200 ).send ( { status : 200, message : 'Data deleted Successfully', data : conversation } );
         } ).catch ( ( error ) => {
             return res.status ( 200 ).send ( { status : 404, message : 'No data found', error : error } );
         } );
     };
 }
 
-module.exports = UserController;
+module.exports = ConversationController;
