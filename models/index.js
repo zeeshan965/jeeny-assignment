@@ -16,7 +16,6 @@ fs.readdirSync ( __dirname ).filter ( file => {
 } );
 
 Object.keys ( db ).forEach ( modelName => {
-    console.log ( modelName );
     if ( db[ modelName ].associate ) {
         db[ modelName ].associate ( db );
     }

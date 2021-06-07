@@ -5,3 +5,4 @@ set NODE_ENV=development node .env
 set NODE_ENV=development node bin/www
 npx sequelize-cli migration:generate --name migration-skeleton
 npx sequelize-cli model:generate --name User --attributes name:string,email:string
+npx sequelize-cli db:migrate:undo --config "config/config.json" --env "development"

@@ -7,7 +7,7 @@ class MessageController {
      * @param res
      */
     static find = ( req, res ) => {
-        DB.Message.findAll ().then ( ( users ) => {
+        DB.message.findAll ().then ( ( users ) => {
             if ( ! users ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
             res.status ( 200 ).send ( { status : 200, message : 'Data find Successfully', data : users } );
         } ).catch ( ( error ) => {
@@ -20,7 +20,7 @@ class MessageController {
      * @param res
      */
     static findById = ( req, res ) => {
-        DB.Message.findByPk ( req.params.id ).then ( ( message ) => {
+        DB.message.findByPk ( req.params.id ).then ( ( message ) => {
             if ( ! message ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
             res.status ( 200 ).send ( { status : 200, message : 'Data find Successfully', data : message } );
         } ).catch ( ( error ) => {
@@ -33,7 +33,7 @@ class MessageController {
      * @param res
      */
     static save = ( req, res ) => {
-        DB.Message.create ( {
+        DB.message.create ( {
             conversation_id : req.body.conversation_id,
             body : req.body.body,
             created_by : req.body.created_by
@@ -50,7 +50,7 @@ class MessageController {
      * @param res
      */
     static update = ( req, res ) => {
-        DB.Message.update ( {
+        DB.message.update ( {
             conversation_id : req.body.conversation_id,
             body : req.body.body,
             created_by : req.body.created_by
@@ -67,7 +67,7 @@ class MessageController {
      * @param res
      */
     static delete = ( req, res ) => {
-        DB.Message.destroy ( {
+        DB.message.destroy ( {
             where : { id : req.params.id },
         } ).then ( ( message ) => {
             if ( ! message ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );

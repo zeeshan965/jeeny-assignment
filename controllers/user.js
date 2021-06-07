@@ -7,7 +7,9 @@ class UserController {
      * @param res
      */
     static find = ( req, res ) => {
-        DB.User.findAll ().then ( ( users ) => {
+        DB.user.findAll ( {
+            include : DB.conversation
+        } ).then ( ( users ) => {
             if ( ! users ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
             res.status ( 200 ).send ( { status : 200, message : 'Data find Successfully', data : users } );
         } ).catch ( ( error ) => {
@@ -20,7 +22,9 @@ class UserController {
      * @param res
      */
     static findById = ( req, res ) => {
-        DB.User.findByPk ( req.params.id ).then ( ( user ) => {
+        DB.user.findByPk ( req.params.id, {
+            include : DB.conversation
+        } ).then ( ( user ) => {
             if ( ! user ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
             res.status ( 200 ).send ( { status : 200, message : 'Data find Successfully', data : user } );
         } ).catch ( ( error ) => {
@@ -33,7 +37,7 @@ class UserController {
      * @param res
      */
     static save = ( req, res ) => {
-        DB.User.create ( {
+        DB.user.create ( {
             name : req.body.name,
             email : req.body.email
         } ).then ( ( user ) => {
@@ -49,7 +53,7 @@ class UserController {
      * @param res
      */
     static update = ( req, res ) => {
-        DB.User.update ( { name : req.body.name }, { where : { id : req.params.id } } ).then ( ( user ) => {
+        DB.user.update ( { name : req.body.name }, { where : { id : req.params.id } } ).then ( ( user ) => {
             if ( ! user ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
             res.status ( 200 ).send ( { status : 200, message : 'Data updated Successfully', data : user } );
         } ).catch ( ( error ) => {
@@ -62,7 +66,7 @@ class UserController {
      * @param res
      */
     static delete = ( req, res ) => {
-        DB.User.destroy ( {
+        DB.user.destroy ( {
             where : { id : req.params.id },
         } ).then ( ( user ) => {
             if ( ! user ) return res.status ( 200 ).send ( { status : 404, message : 'No data found' } );
