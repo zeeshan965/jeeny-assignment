@@ -1,0 +1,7 @@
+npx sequelize-cli db:migrate --config "config/config.json" --env "development"
+npx sequelize-cli db:migrate:status --config "config/config.json" --env "development"
+npx sequelize-cli db:migrate //not working on local env
+set NODE_ENV=development node .env
+set NODE_ENV=development node bin/www
+npx sequelize-cli migration:generate --name migration-skeleton
+npx sequelize-cli model:generate --name User --attributes name:string,email:string
