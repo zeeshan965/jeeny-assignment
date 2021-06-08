@@ -6,6 +6,9 @@
 const app = require ( '../app' );
 const debug = require ( 'debug' ) ( 'jeeny-assignment:server' );
 const http = require ( 'http' );
+const socket = require ( 'socket.io' );
+const moment = require ( 'moment' );
+const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require ( '../public/utils/users' );
 
 /**
  * Get port from environment and store in Express.
@@ -19,11 +22,62 @@ app.set ( 'port', port );
 const server = http.createServer ( app );
 
 /**
+ *
+ * Initialize Socket
+ */
+var io = socket ( server );
+
+/**
  * Listen on provided port, on all network interfaces.
  */
 server.listen ( port );
 server.on ( 'error', onError );
 server.on ( 'listening', onListening );
+const botName = 'Chat Bot';
+io.on ( 'connection', ( socket ) => {
+    console.log ( 'User connected' );
+    socket.on ( 'joinRoom', ( { username, room } ) => {
+        const user = userJoin ( socket.id, username, room );
+        socket.join ( user.room );
+
+        //Welcome current user
+        socket.emit ( 'message', formatMessage ( botName, 'Welcome to Chat!' ) );
+
+        // Broadcast when a user connects
+        socket.broadcast.to ( user.room )
+            .emit ( 'message', formatMessage ( botName, `${ user.username } has joined the chat` ) );
+
+        // Send users and room info
+        io.to ( user.room ).emit ( 'roomUsers', {
+            room : user.room,
+            users : getRoomUsers ( user.room )
+        } );
+    } );
+
+    // Listen for chatMessage
+    socket.on ( 'chatMessage', ( message ) => {
+        const user = getCurrentUser ( socket.id );
+        io.to ( user.room ).emit ( 'message', formatMessage ( user.username, message ) );
+        //console.log ( 'message: ' + message );
+    } );
+
+    //Run when user disconnects
+    socket.on ( 'disconnect', () => {
+        console.log ( 'User disconnected' );
+        const user = userLeave ( socket.id );
+        if ( ! user ) return;
+        io.to ( user.room ).emit ( 'message',
+            formatMessage ( botName, `${ user.username } has left the chat` )
+        );
+
+        // Send users and room info
+        io.to ( user.room ).emit ( 'roomUsers', {
+            room : user.room,
+            users : getRoomUsers ( user.room )
+        } );
+    } );
+} );
+
 
 /**
  * Normalize a port into a number, string, or false.
@@ -68,4 +122,17 @@ function onListening () {
     let addr = server.address ();
     let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
     debug ( 'Listening on ' + bind );
+}
+
+/**
+ * @param username
+ * @param text
+ * @returns {{text : *, time : string, username : *}}
+ */
+function formatMessage ( username, text ) {
+    return {
+        username,
+        text,
+        time : moment ().format ( 'h:mm a' )
+    };
 }
