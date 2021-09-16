@@ -8,6 +8,8 @@ require ( 'dotenv' ).config ();
 
 const indexRouter = require ( './routes/index' );
 const api = require ( "./routes/api" );
+const rateLimit = require("express-rate-limit");
+
 const app = express ();
 
 // view engine setup
@@ -24,6 +26,16 @@ app.use ( bodyParser.urlencoded ( { extended : true } ) );
 app.use ( bodyParser.raw ( { extended : true } ) );
 app.use ( bodyParser.json ( { extended : true } ) );
 app.use ( bodyParser.text ( { extended : true } ) );
+
+//Implement rate limiting
+app.use(
+    rateLimit({
+        windowMs: 60 * 1000, // 12 hour duration in milliseconds
+        max: 5,
+        message: "You exceeded 5 requests in 60 seconds!",
+        headers: true,
+    })
+);
 
 // Routes which should handle requests
 app.use ( '/', indexRouter );
